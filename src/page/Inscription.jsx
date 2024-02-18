@@ -35,7 +35,7 @@ import { auth } from '../config/firebase.js'
         <>
             <div className='container'>
                 <div className='container'>
-                    <div className='container shadow-sm' style={{ height: '450px', width: '750px' }}>
+                    <div className='container shadow-lg mt-5' style={{ width: '750px' }}>
                         <div className='row p-5'>
                             <div className='col-lg-6 text-start'>
                                 <h4 className=''> Gestion de fichier</h4>

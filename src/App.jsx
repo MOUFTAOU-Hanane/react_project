@@ -5,6 +5,8 @@ import Connexion from './page/connexion';
 import Inscription from './page/Inscription';
 import Home from './page/Home';
 import Fichiers from './page/fichiers';
+import Protected from './page/Protected';
+
 
 
 function App() {
@@ -13,8 +15,11 @@ function App() {
       <Routes>
         <Route path="/connexion" element={<Connexion/>} />
         <Route path="/inscription" element={<Inscription/>} />
-        <Route path="/home" element={<Home/>} />
-        <Route path="/list" element={<Fichiers/>} />
+        <Route path='/' element={<Protected/>} >
+          <Route path="/home" element={<Home/>} />
+          <Route path="/list" element={<Fichiers/>} />
+        </Route>
+       
       </Routes>
     </Router>
   );

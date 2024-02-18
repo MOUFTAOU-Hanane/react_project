@@ -30,13 +30,13 @@ const Connexion = () => {
     return (
       <div className='container'>
          <div className='container'>
-            <div className='container shadow-sm'  style={{ height: '450px', width: '750px' }}>
+            <div className='container shadow-lg mt-5'  style={{  width: '750px' }}>
                     <div className='row p-5'>
                         <div className='col-lg-6 text-start'>
                             <h4 className=''> Gestion de fichier</h4> 
                             <p className=''> Connectez-vous maintenant pour une expérience fluide et efficace</p>  
                         </div> 
-                        <div className='col-lg-8 text-start'>
+                        <div className='col-lg-6 text-start'>
                                 <form>
                                       
                                         <div className="mb-3">
@@ -65,7 +65,7 @@ const Connexion = () => {
                                         <button type="submit " 
                                         className="btn btn-primary bg-danger"
                                         onClick={onSubmit}>Submit</button>
-                                        <p><a href="#" className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><Link to="/connexion">Vous avez un compte</Link></a></p>
+                                        <p><a href="#" className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><Link to="/inscription">Vous navez pas un compte</Link></a></p>
 
                                 </form>
                         </div> 
