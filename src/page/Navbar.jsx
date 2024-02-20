@@ -1,18 +1,8 @@
-
 import { Link } from 'react-router-dom';
-const Navbar = () => {
 
-   
-    // const [name, setName] = useState('');
-    // const [email, setEmail] = useState('');
-  
-    // const onSubmit = () => {
-    //   alert(`Submitted ${name} ${email}`);
-    // };
-    
-  
+const Navbar = () => {
     return (
-        <div className='container'>
+        <div className=''>
             <nav className='navbar navbar-expand-lg bg-body-tertiary'>
                 <div className='container'>
                     <button
@@ -27,22 +17,25 @@ const Navbar = () => {
                         <span className='navbar-toggler-icon'></span>
                     </button>
                     <div className='collapse navbar-collapse' id='navbarSupportedContent'>
-                        <ul className='navbar-nav me-auto mb-2 mb-lg-0'>
-                            
-                            <li className='nav-item'>
+                        <ul className='navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-between w-100'>
+                            <li className='nav-item mx-4'>
                                 <a className='nav-link'>
-                                <Link to="/home">Home</Link>
-                                    
+                                    <Link to="/home">Acceuil</Link>
                                 </a>
                             </li>
-                            <li className='nav-item'>
+                            <li className='nav-item mx-4 text-dark'>
                                 <a className='nav-link'>
-                                <Link to="/list">Fichiers</Link>
+                                    <Link to="/list"> Mes Fichiers</Link>
                                 </a>
                             </li>
-                            <li className='nav-item'>
+                            <li className='nav-item mx-4 text-dark'>
                                 <a className='nav-link'>
-                                <Link to="/home"> Profil</Link>
+                                    <Link to="/send_list">Fichiers Partagés</Link>
+                                </a>
+                            </li>
+                            <li className='nav-item mx-4 text-dark'>
+                                <a className='nav-link'>
+                                    <Link to="/profil"> Profil</Link>
                                 </a>
                             </li>
                         </ul>
@@ -51,6 +44,6 @@ const Navbar = () => {
             </nav>
         </div>
     );
-  };
+};
 
-  export default Navbar
+export default Navbar;
