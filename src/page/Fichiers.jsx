@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { ref, listAll } from 'firebase/storage';
 import { storage } from '../config/firebase';
 import Navbar from './Navbar';
-import { addDoc, collection, getFirestore } from 'firebase/firestore'; 
+import { addDoc, collection, getFirestore, getDocs } from 'firebase/firestore'; 
 import { auth } from '../config/firebase';
 import { getFileDownloadURL } from '../config/urlFile';
-
 
 const Fichiers = () => {
     const [fileList, setFileList] = useState([]);
     const [email, setEmail] = useState('');
     const [selectedFileName, setSelectedFileName] = useState(''); 
-    const [fileUrl, setFileUrl] = useState(''); // État pour stocker le nom du fichier sélectionné
-    const userUID =auth.currentUser.uid;
+    const [fileUrl, setFileUrl] = useState('');
+    const [users, setUsers] = useState([]);
+    const [showUserList, setShowUserList] = useState(false);
+    const [clickedUser, setClickedUser] = useState(false); 
+
+    const userUID = auth.currentUser.uid;
 
     useEffect(() => {
         const getFileList = async () => {
@@ -27,6 +30,21 @@ const Fichiers = () => {
         };
 
         getFileList();
+
+        const fetchUsers = async () => {
+            const db = getFirestore();
+            const usersCollection = collection(db, 'users');
+            
+            try {
+              const querySnapshot = await getDocs(usersCollection);
+              const usersData = querySnapshot.docs.map(doc => doc.data());
+              setUsers(usersData);
+            } catch (error) {
+              console.error('Error fetching users:', error);
+            }
+          };
+      
+          fetchUsers();
     }, []);
 
     const getFileUrl = async (fileName) => {
@@ -38,12 +56,11 @@ const Fichiers = () => {
         }
     };
 
-    const sendFile  = async (e) =>{
+    const sendFile = async (e) => {
         e.preventDefault();
         try {
             const db = getFirestore();
-                // Enregistrer uniquement le nom du fichier sélectionné
-            await  addDoc(collection(db, "shared_files"), {
+            await addDoc(collection(db, "shared_files"), {
                 email: email,
                 file_name: selectedFileName, 
                 send_by: userUID
@@ -54,13 +71,22 @@ const Fichiers = () => {
             alert(err.message);
         }
     };
+
+
+    const handleUserClick = (userEmail) => {
+        setEmail(userEmail);
+        setShowUserList(false);
+        setClickedUser(true); // Indiquer que l'utilisateur a cliqué sur un élément de la liste
+    };
     
-    
+
+    const handleEmailFocus = () => {
+        setShowUserList(true);
+    };
 
     return (
         <div className=''>
             <Navbar />
-           
             <div className='container mt-4'>
                 <div className='row mt-4'>
                     {fileList.length === 0 ? (
@@ -70,10 +96,10 @@ const Fichiers = () => {
                             {fileList.map((fileName, index) => (
                                 <li className="list-group-item d-flex justify-content-between align-items-center" key={index}>
                                     {fileName}
-                                    <div className=''>
-                                        <button type="button" className="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => setSelectedFileName(fileName)}>Partager</button>
-                                        <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1" onClick={() => getFileUrl(fileName)}>Voir</button>
-                                        <button type="button" className="btn btn-danger mx-2">Supprimer</button>
+                                    <div className='row'>
+                                        <div className='col'> <button type="button" className="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => setSelectedFileName(fileName)}>Partager</button></div>
+                                        <div className='col'><button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal1" onClick={() => getFileUrl(fileName)}>Voir</button></div>
+                                        <div className='col'><button type="button" className="btn btn-danger mx-2">Supprimer</button></div>  
                                     </div>
                                 </li>
                             ))}
@@ -81,8 +107,8 @@ const Fichiers = () => {
                     )}
                 </div>
             </div>
-    
-            <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -91,8 +117,26 @@ const Fichiers = () => {
                         </div>
                         <div className="modal-body">
                             <form className="text-start">
-                                <div className="mb-3">
-                                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder='email' value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <input
+                                            type="text"
+                                            className="form-control"
+                                            aria-describedby="emailHelp"
+                                            label="Email"
+                                            value={email}
+                                            onFocus={handleEmailFocus} // Utilisation de handleEmailFocus pour gérer le focus
+                                           
+                                            required                                        />
+                                <div className='my-4'>
+                                {showUserList && (
+                                    <ul className="list-group">
+                                        {users.map((user, index) => (
+                                            <li className="list-group-item" key={index} onClick={() =>  { handleUserClick(user.email)}}> 
+                                                {user.email}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+
                                 </div>
                                 <button type="submit" className="btn btn-primary" onClick={sendFile}>Partager</button>
                             </form>
@@ -100,7 +144,7 @@ const Fichiers = () => {
                     </div>
                 </div>
             </div>
-    
+
             <div className="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -116,7 +160,6 @@ const Fichiers = () => {
             </div>
         </div>
     );
-    
 };
 
 export default Fichiers;
